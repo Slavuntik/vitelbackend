@@ -20,6 +20,10 @@ app.use('/subscribe',subscribe);
 const checkpromo=require('./routes/checkpromo');
 app.use('/checkpromo',checkpromo);
 
+const orders=require('./routes/orders');
+app.use('/orders',orders);
+
+
 
 if (process.env.NODE_ENV==='production') {
     console.log('production')
