@@ -17,6 +17,9 @@ app.use('/checkemail',checkemail);
 const subscribe=require('./routes/subscribe');
 app.use('/subscribe',subscribe);
 
+const checkpromo=require('./routes/checkpromo');
+app.use('/checkpromo',checkpromo);
+
 
 if (process.env.NODE_ENV==='production') {
     console.log('production')
