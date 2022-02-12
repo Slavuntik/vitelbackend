@@ -21,9 +21,9 @@ console.log("email confirmation")
 
 router.post('/',async (req,res)=> {
     res.status(200).send("subscribe test ok")
-    if (req.data.promoCode) {
+    if (req.body.promoCode) {
         let codesCol=await loadDataCollection('promocodes')
-        let codes=await codesCol.find({"promoCode":req.data.promoCode}).toArray()
+        let codes=await codesCol.find({"promoCode":req.body.promoCode}).toArray()
         if (codes.length>0) {
             res.status(200).send({
                "promoCode":codes[0].promoCode,
