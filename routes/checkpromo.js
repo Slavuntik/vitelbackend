@@ -40,7 +40,7 @@ router.get('/',async (req,res)=> {
     }
     else {
         res.status(200).send({
-            "avtive":false
+            "active":false
         })
     }
 })
