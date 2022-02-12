@@ -19,7 +19,7 @@ async function loadDataCollection(collectionName) {
 
 console.log("email confirmation")
 
-router.get('/',async (req,res)=> {
+router.post('/',async (req,res)=> {
     res.status(200).send("subscribe test ok")
     if (req.data.promoCode) {
         let codesCol=await loadDataCollection('promocodes')
