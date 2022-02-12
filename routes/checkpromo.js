@@ -3,7 +3,7 @@ const router=express.Router();
 const emailService=require('./emailService')
 
 const settings = {
-    connectionString: "mongodb+srv://serviceworker:Almaz$321@cluster0.m1zui.mongodb.net/test"
+    connectionString: "mongodb+srv://serviceworker:Almaz$321@cluster0.m1zui.mongodb.net/vitelschool"
 }
 
 const mongodb = require('mongodb');
@@ -20,10 +20,11 @@ async function loadDataCollection(collectionName) {
 console.log("email confirmation")
 
 router.post('/',async (req,res)=> {
-    res.status(200).send("subscribe test ok")
+    console.log(req.body.promoCode)
     if (req.body.promoCode) {
         let codesCol=await loadDataCollection('promocodes')
         let codes=await codesCol.find({"promoCode":req.body.promoCode}).toArray()
+        console.log(codes)
         if (codes.length>0) {
             res.status(200).send({
                "promoCode":codes[0].promoCode,
