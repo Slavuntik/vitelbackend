@@ -42,7 +42,12 @@ router.post('/',async (req,res)=> {
             orderNumber=r.insertedId.toString()
             await axios.get(baseUrl+authString+"&"+returnUrl+"&orderNumber="+orderNumber.toString()+"&amount="+req.body.amount+"00").then((result)=> {
                 console.log(result.data)
-                res.status(201).send(result.data)
+                //updating order
+                ordersCols.updateOne({_id:mongodb.ObjectId(r.insertedId.toString())},{$set:{"sberOrderId":result.data.orderId}}).then((r2)=> {
+                    console.log(r2);
+                    res.status(201).send(result.data)
+                })
+                
             }).catch((err)=> {
                 console.log(err)
             })
