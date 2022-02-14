@@ -1,6 +1,7 @@
 const express=require('express');
 const router=express.Router();
 const emailService=require('./emailService')
+const url=require('url')
 
 const settings = {
     connectionString: "mongodb+srv://serviceworker:Almaz$321@cluster0.m1zui.mongodb.net/vitelschool"
@@ -8,6 +9,7 @@ const settings = {
 
 const mongodb = require('mongodb');
 const axios = require('axios');
+const { resourceLimits } = require('worker_threads');
 
 async function loadDataCollection(collectionName) {
     const client = await mongodb.MongoClient.connect(settings.connectionString, {
@@ -19,13 +21,43 @@ async function loadDataCollection(collectionName) {
 
 console.log("orders for dashboard")
 
-router.get('/',(req,res)=> {
-    res.status(200).send("test ok")
-})
 
-const baseUrl="https://3dsec.sberbank.ru/payment/rest/register.do?"
+const baseUrl="https://3dsec.sberbank.ru/payment/rest/"
 const authString="userName=T150408895112-api&password=T150408895112"
 let returnUrl="returnUrl=https://vitelschool.ru/order"
+
+
+
+router.get('/',async (req,res)=> {
+    let orderId=url.parse(req.url,true).query.orderId
+    if (orderId) {
+        console.log(orderId)
+        //get orderNumber from database
+        let ordersCol=await loadDataCollection("orders")
+        let orders=await ordersCol.find({"sberOrderId":orderId}).toArray()
+        if (orders.length>0) {
+            let orderNumber=orders[0]._id.toString()
+            console.log(orderNumber, orderId)
+            //checking order status from sber
+            await axios.get(baseUrl+"getOrderStatusExtended.do?"+authString+"&orderId="+orderId+"&orderNumber"+orderNumber).then(async (result)=> {
+                console.log(result.data)
+                //updtaing order status personal database
+                await ordersCol.updateOne({"_id":mongodb.ObjectId(orderNumber)},{$set:{"payed":true, "sberResponse":result.data}}).then((r2)=> {
+                    res.status(200).send({
+                        "orderId":orderId,
+                        "paymentStatus":result.status.errorCode
+                    })
+                })
+            }).catch(err=> {
+                console.log(err)
+                res.status(501).send("payment gateway error")
+            })
+        }
+    }
+    else {
+        res.status(200).send("orderId is required")
+    }
+})
 
 router.post('/',async (req,res)=> {
     if (req.body.amount) {
@@ -41,14 +73,14 @@ router.post('/',async (req,res)=> {
             "sberOrderId":null
         }).then(async (r)=> {
             orderNumber=r.insertedId.toString()
-            await axios.get(baseUrl+authString+"&"+returnUrl+"&orderNumber="+orderNumber.toString()+"&amount="+req.body.amount+"00").then(async (result)=> {
+            await axios.get(baseUrl+"register.do?"+authString+"&"+returnUrl+"&orderNumber="+orderNumber.toString()+"&amount="+req.body.amount+"00").then(async (result)=> {
                 console.log(result.data)
                 //updating order
                 await ordersCols.updateOne({_id:mongodb.ObjectId(r.insertedId.toString())},{$set:{"sberOrderId":result.data.orderId}}).then((r2)=> {
                     console.log(r2);
                     res.status(201).send(result.data)
                 }).catch((err2)=> {
-                    res.status(501).send("Payment gateway unvailable")
+                    res.status(501).send("Payment gateway unavailable")
                 })
                 
             }).catch((err)=> {
