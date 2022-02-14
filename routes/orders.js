@@ -25,7 +25,7 @@ router.get('/',(req,res)=> {
 
 const baseUrl="https://3dsec.sberbank.ru/payment/rest/register.do?"
 const authString="userName=T150408895112-api&password=T150408895112"
-let returnUrl="returnUrl=https://vitelschool.ru/order/"
+let returnUrl="returnUrl=https://vitelschool.ru/order"
 
 router.post('/',async (req,res)=> {
     if (req.body.amount) {
@@ -37,15 +37,18 @@ router.post('/',async (req,res)=> {
             "amount":req.body.amount,
             "sku":1,
             "email":req.body.email,
-            "payed":false
+            "payed":false,
+            "sberOrderId":null
         }).then(async (r)=> {
             orderNumber=r.insertedId.toString()
-            await axios.get(baseUrl+authString+"&"+returnUrl+"&orderNumber="+orderNumber.toString()+"&amount="+req.body.amount+"00").then((result)=> {
+            await axios.get(baseUrl+authString+"&"+returnUrl+"&orderNumber="+orderNumber.toString()+"&amount="+req.body.amount+"00").then(async (result)=> {
                 console.log(result.data)
                 //updating order
-                ordersCols.updateOne({_id:mongodb.ObjectId(r.insertedId.toString())},{$set:{"sberOrderId":result.data.orderId}}).then((r2)=> {
+                await ordersCols.updateOne({_id:mongodb.ObjectId(r.insertedId.toString())},{$set:{"sberOrderId":result.data.orderId}}).then((r2)=> {
                     console.log(r2);
                     res.status(201).send(result.data)
+                }).catch((err2)=> {
+                    res.status(501).send("Payment gateway unvailable")
                 })
                 
             }).catch((err)=> {
