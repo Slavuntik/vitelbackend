@@ -40,7 +40,7 @@ router.post('/',async (req,res)=> {
             "payed":false
         }).then(async (r)=> {
             orderNumber=r.insertedId.toString()
-            await axios.get(baseUrl+authString+"&"+returnUrl+"&"+orderNumber.toString()+"&orderNumber="+orderNumber.toString()+"&amount="+req.body.amount+"00").then((result)=> {
+            await axios.get(baseUrl+authString+"&"+returnUrl+"&orderNumber="+orderNumber.toString()+"&amount="+req.body.amount+"00").then((result)=> {
                 console.log(result.data)
                 res.status(201).send(result.data)
             }).catch((err)=> {
