@@ -24,7 +24,7 @@ console.log("orders for dashboard")
 
 const baseUrl="https://3dsec.sberbank.ru/payment/rest/"
 const authString="userName=T150408895112-api&password=T150408895112"
-let returnUrl="returnUrl=https://vitelschool.ru/order"
+let returnUrl="returnUrl=https://vitelschool.ru/orders"
 
 
 
@@ -45,7 +45,7 @@ router.get('/',async (req,res)=> {
                 await ordersCol.updateOne({"_id":mongodb.ObjectId(orderNumber)},{$set:{"payed":true, "sberResponse":result.data}}).then((r2)=> {
                     res.status(200).send({
                         "orderId":orderId,
-                        "paymentStatus":result.status.errorCode
+                        "paymentStatus":result.data.orderStatus
                     })
                 })
             }).catch(err=> {
