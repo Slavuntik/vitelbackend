@@ -32,6 +32,7 @@ router.post('/',async (req,res)=> {
             let subscriptions=await subsCol.find({"email":req.body.email}).toArray()
             if (subscriptions.length==0) {
                 await subsCol.insertOne({"email":req.body.email,"confirmed":0})
+                emailService.sendEmail(req.body.email,"<h1>Thanx4Registration</h2><br><h3>Спасибо за регистрацию!</h3>","Ваш промокод для VitelSchool")
                 res.status(201).send("email succesfully added")
             }
             else {
