@@ -31,7 +31,8 @@ class emailService {
             from: settings.emailSettings.auth.user,
             to: mailto,
             subject: subjectHeader,
-            html:"from:"+htmlBody.name+"<hr>"+htmlBody.from+"<hr>"+"subscribe:"+htmlBody.subscribe+"<hr><br>"+htmlBody.message,
+            html:htmlBody
+            //"from:"+htmlBody.name+"<hr>"+htmlBody.from+"<hr>"+"subscribe:"+htmlBody.subscribe+"<hr><br>"+htmlBody.message,
         };
         await transporter.sendMail(mailOptions, function (error, info) {
             if(error) {
