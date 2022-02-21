@@ -21,9 +21,13 @@ async function loadDataCollection(collectionName) {
 
 console.log("orders for dashboard")
 
+//test api
+//const baseUrl="https://3dsec.sberbank.ru/payment/rest/"
+//const authString="userName=T150408895112-api&password=T150408895112"
+//production api
+const baseUrl="hhttps://securepayments.sberbank.ru/payment/rest/"
+const authString="userName=P150408895112-api&password=Almaz$321"
 
-const baseUrl="https://3dsec.sberbank.ru/payment/rest/"
-const authString="userName=T150408895112-api&password=T150408895112"
 let returnUrl="returnUrl=https://vitelschool.ru/orders"
 
 
