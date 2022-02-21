@@ -44,8 +44,8 @@ router.get('/',async (req,res)=> {
                 //updtaing order status personal database
                 await ordersCol.updateOne({"_id":mongodb.ObjectId(orderNumber)},{$set:{"payed":true, "sberResponse":result.data}}).then((r2)=> {
                     //email notification
-                    let htmlEmailBody="<h2>Заказ №" + orderId+"</h2><h3>Успешно оплачен!</h3><br>"
-                    htmlEmailBody+="<h3><a href='https://vitelschool.ru/orders?orderId="+orderId.toString()+">Ваша постоянная ссылка на мастер-класс</a></h3><hr><br>"
+                    let htmlEmailBody="<h2>Заказ №" + orderId+"</h2><h3>Успешно оплачен!</h3><br>";
+                    htmlEmailBody+="<h3><a href='https://vitelschool.ru/orders?orderId="+orderId.toString()+"'>Ваша постоянная ссылка на мастер-класс</a></h3><hr><br>";
                     htmlEmailBody+="<h3>C уважением, команда VitelSchool</h3>"
 
                     emailService.sendEmail(result.data.payerData.email,htmlEmailBody,"Vitelschool = Заказ №"+orderId+ " (оплачен)")
