@@ -53,7 +53,7 @@ router.get('/',async (req,res)=> {
                     htmlEmailBody+="<h3>C уважением, команда VitelSchool</h3>"
 
                     emailService.sendEmail(result.data.payerData.email,htmlEmailBody,"VitelSchool = Заказ №"+orderId+ " (оплачен)")
-                    //emailService.sendEmail("bogoslavec_viktoriya@mail.ru",htmlEmailBody,"VitelSchool = Заказ №"+orderId+ " (оплачен)")
+                    emailService.sendEmail("bogoslavec_viktoriya@mail.ru",htmlEmailBody,"VitelSchool = Заказ №"+orderId+ " (оплачен)")
                     //returning data
                     res.status(200).send({
                         "orderId":orderId,
