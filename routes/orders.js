@@ -51,9 +51,13 @@ router.get('/',async (req,res)=> {
                     let htmlEmailBody="<h2>Заказ №" + orderId+"</h2><h3>На сумму "+ parseFloat(result.data.amount)/100 +"рублей - Успешно оплачен!</h3><br>";
                     htmlEmailBody+="<h3><a href='https://vitelschool.ru/orders?orderId="+orderId.toString()+"'>Ваша постоянная ссылка на мастер-класс</a></h3><hr><br>";
                     htmlEmailBody+="<h3>C уважением, команда VitelSchool</h3>"
-                    if (result.data.payerData.email) {
+                    try {
                         emailService.sendEmail(result.data.payerData.email,htmlEmailBody,"VitelSchool = Заказ №"+orderId+ " (оплачен)")
                     }
+                    catch (err) {
+                        console.log(err)
+                    }
+                    
                     emailService.sendEmail("bogoslavec_viktoriya@mail.ru",htmlEmailBody,"VitelSchool = Заказ №"+orderId+ " (оплачен)")
                     //returning data
                     res.status(200).send({
